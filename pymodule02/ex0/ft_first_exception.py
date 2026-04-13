@@ -5,9 +5,10 @@ def input_temperature(temp_str: str) -> int:
 
 def test_temperature(temp_str: str) -> None:
     print(f"Input data is '{temp_str}'")
+    result: int = 0
     try:
         result = input_temperature(temp_str)
-    except Exception as e:
+    except ValueError as e:
         print(f"Caught input_temperature error: {e}")
     else:
         print(f"Temperature is now {result}°C")
