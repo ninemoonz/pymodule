@@ -44,13 +44,31 @@ def get_player_pos():
             print(e)
 
 
-def distance_formula(int_list: list):
-    ...
+def first_formula(tuple_list: tuple):
+    x_1 = tuple_list[0]
+    y_1 = tuple_list[1]
+    z_1 = tuple_list[2]
+
+    distance = math.sqrt((0 - x_1)**2 + (0 - y_1)**2 + (0 - z_1)**2)
+    return distance
+
+
+'''
+def second_formula(tuple_one: tuple, tuple_two: tuple):
+    x_1 = tuple_one[0]
+    y_1 = tuple_one[1]
+    z_1 = tuple_one[2]
+
+    x_2 = tuple_two[0]
+    y_2 = tuple_two[1]
+    z_2 = tuple_two[2]
+'''
 
 
 if __name__ == "__main__":
     print("=== Game Coordinate System ===")
     print()
     result = get_player_pos()
-    print(result)
+    tuple_result = tuple(result)
+    print(f"{first_formula(tuple_result):.4f}")
     print()
