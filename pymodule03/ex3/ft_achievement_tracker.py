@@ -1,0 +1,6 @@
+def gen_player_achievements():
+    ...
+
+
+if __name__ == "__main__":
+    ...
