@@ -44,16 +44,17 @@ def get_player_pos():
             print(e)
 
 
-def first_formula(tuple_list: tuple):
+def first_formula(tuple_list: tuple) -> None:
     x_1 = tuple_list[0]
     y_1 = tuple_list[1]
     z_1 = tuple_list[2]
 
+    print(f"Got a first tuple: {tuple_list}")
+    print(f"It includes: X={x_1}, Y={y_1}, Z={z_1}")
     distance = math.sqrt((0 - x_1)**2 + (0 - y_1)**2 + (0 - z_1)**2)
-    return distance
+    print(f"Distance to center: {distance:.4f}")
 
 
-'''
 def second_formula(tuple_one: tuple, tuple_two: tuple):
     x_1 = tuple_one[0]
     y_1 = tuple_one[1]
@@ -62,13 +63,20 @@ def second_formula(tuple_one: tuple, tuple_two: tuple):
     x_2 = tuple_two[0]
     y_2 = tuple_two[1]
     z_2 = tuple_two[2]
-'''
+    distance = math.sqrt((x_2 - x_1)**2 + (y_2 - y_1)**2 + (z_2 - z_1)**2)
+    print(f"Distance between the 2 sets of coordinates: {distance:.4f}")
 
 
 if __name__ == "__main__":
     print("=== Game Coordinate System ===")
     print()
+    print("Get a first set of coordinates")
     result = get_player_pos()
     tuple_result = tuple(result)
-    print(f"{first_formula(tuple_result):.4f}")
+    first_formula(tuple_result)
     print()
+    print("Get a second set of coordinates")
+    result2 = get_player_pos()
+    second_formula(result, result2)
+
+
