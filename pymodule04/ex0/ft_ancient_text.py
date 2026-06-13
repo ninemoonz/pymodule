@@ -13,7 +13,11 @@ if __name__ == "__main__":
         print(f"Accessing file '{file_name}'")
         try:
             f = open(file_name, "r")
+            print("---")
+            print()
             print(f.read())
+            print()
+            print("---")
         except OSError as e:
             print(f"Error opening file '{file_name}': {e}")
         finally:

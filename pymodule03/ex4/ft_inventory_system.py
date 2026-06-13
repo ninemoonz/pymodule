@@ -6,6 +6,8 @@ def str_parse(arg_list: list[str]) -> None:
     for arg_element in arg_list:
         parse_list = arg_element.split(":")
         print(parse_list)
+        parse_dict = {parse_list[0]: parse_list[1]}
+        print(parse_dict)
 
 
 if __name__ == "__main__":
