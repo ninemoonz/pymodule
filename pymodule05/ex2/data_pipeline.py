@@ -114,7 +114,13 @@ class CSVPlugin:
 
 class JSONPlugin:
     def process_output(self, data: list[tuple[int, str]]) -> None:
-        ...
+        jsn_dict: dict = {}
+        for tup_el in data:
+            key, value = tup_el
+            key_name = "item_" + str(key)
+            jsn_dict[key_name] = str(value)
+        print("JSON Output:")
+        print(jsn_dict)
 
 
 class DataStream:
@@ -195,3 +201,15 @@ if __name__ == "__main__":
     print("Send 3 processed data from each processor to a CSV plugin:")
     ds.output_pipeline(3, csv_p)
     print()
+    ds.print_processors_stats()
+    print()
+    print("Send another batch of data")
+    ds.process_stream(test_data_2)
+    print()
+    ds.print_processors_stats()
+    print()
+    print("Send 5 processed data from each processor to JSON plugin:")
+    json_p = JSONPlugin()
+    ds.output_pipeline(5, json_p)
+    print()
+    ds.print_processors_stats()
