@@ -115,7 +115,6 @@ class CSVPlugin:
 class JSONPlugin:
     def process_output(self, data: list[tuple[int, str]]) -> None:
         json_list: list[str] = []
-        json_result: str = ""
         for tup_el in data:
             key, value = tup_el
             key_name = "item_" + str(key)
