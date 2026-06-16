@@ -102,6 +102,21 @@ class ExportPlugin(Protocol):
         ...
 
 
+class CSVPlugin:
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        csv_str: list[str] = []
+        for tup_el in data:
+            csv_str.append(tup_el[1])
+        join_csv = ",".join(csv_str)
+        print("CSV Output:")
+        print(join_csv)
+
+
+class JSONPlugin:
+    def process_output(self, data: list[tuple[int, str]]) -> None:
+        ...
+
+
 class DataStream:
     def __init__(self):
         self._proc_list = []
@@ -131,7 +146,10 @@ class DataStream:
                   f"remaining {len(proc._stored)} on processor")
 
     def output_pipeline(self, nb: int, plugin: ExportPlugin) -> None:
-        ...
+        for proc in self._proc_list:
+            count = min(nb, len(proc._stored))
+            data = [proc.output() for _ in range(count)]
+            plugin.process_output(data)
 
 
 if __name__ == "__main__":
@@ -142,10 +160,38 @@ if __name__ == "__main__":
                              {'log_level': 'INFO',
                              'log_message': 'User wil is connected'}],
                             42, ['Hi', 'five']]
+    test_data_2: list[Any] = [21,
+                              ['I love AI',
+                               'LLMs are wonderful',
+                               'Stay healthy'],
+                              [{'log_level': 'ERROR',
+                                'log_message': '500 server crash'},
+                               {'log_level': 'NOTICE',
+                                'log_message': 
+                                'Certificate expires in 10 days'}],
+                              [32, 42, 64, 84, 128, 168],
+                              'World hello']
     print("=== Code Nexus - Data Pipeline ===")
     print()
     print("Initialize Data Stream...")
     ds = DataStream()
+    np = NumericProcessor()
+    tp = TextProcessor()
+    lp = LogProcessor()
+    csv_p = CSVPlugin()
     print()
     ds.print_processors_stats()
+    print()
+    print("Registering Processors")
+    ds.register_processor(np)
+    ds.register_processor(tp)
+    ds.register_processor(lp)
+    print()
     print("Send first batch of data on stream")
+    ds.process_stream(test_data)
+    print()
+    ds.print_processors_stats()
+    print()
+    print("Send 3 processed data from each processor to a CSV plugin:")
+    ds.output_pipeline(3, csv_p)
+    print()
