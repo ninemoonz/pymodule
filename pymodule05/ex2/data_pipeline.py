@@ -64,7 +64,7 @@ class TextProcessor(DataProcessor):
 
     def ingest(self, test_data: Any) -> None:
         if not self.validate(test_data):
-            raise ValueError("Improper numeric data")
+            raise ValueError("Improper text data")
         if isinstance(test_data, str):
             self._stored.append((self._rank, test_data))
             self._rank += 1
@@ -89,7 +89,7 @@ class LogProcessor(DataProcessor):
 
     def ingest(self, test_data: Any) -> None:
         if not self.validate(test_data):
-            raise ValueError("Improper numeric data")
+            raise ValueError("Improper log data")
         dict_values = test_data if isinstance(test_data, list) else [test_data]
         for element in dict_values:
             line: str = ": ".join(element.values())
@@ -114,18 +114,22 @@ class CSVPlugin:
 
 class JSONPlugin:
     def process_output(self, data: list[tuple[int, str]]) -> None:
-        jsn_dict: dict = {}
+        json_list: list[str] = []
+        json_result: str = ""
         for tup_el in data:
             key, value = tup_el
             key_name = "item_" + str(key)
-            jsn_dict[key_name] = str(value)
+            json_value = f'"{key_name}": "{value}"'
+            json_list.append(json_value)
+        json_str = ", ".join(json_list)
+        json_result = "{" + json_str + "}"
         print("JSON Output:")
-        print(jsn_dict)
+        print(json_result)
 
 
 class DataStream:
-    def __init__(self):
-        self._proc_list = []
+    def __init__(self) -> None:
+        self._proc_list: list[DataProcessor] = []
 
     def register_processor(self, proc: DataProcessor) -> None:
         self._proc_list.append(proc)
