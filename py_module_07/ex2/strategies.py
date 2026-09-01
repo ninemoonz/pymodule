@@ -18,6 +18,10 @@ class NormalStrategy(BattleStrategy):
 
 class AggressiveStrategy(BattleStrategy):
     def act(self, creature: Creature) -> str:
+        if not isinstance(creature, TransformCapability):
+            raise StrategyError("Battle Error, Aborting tournament:"
+                                f"Invalid Creature '{creature.name}' "
+                                "for this Aggressive Strategy")
         return (f"{creature.transform()}\n"
                 f"{creature.attack()}\n"
                 f"{creature.revert()}")
