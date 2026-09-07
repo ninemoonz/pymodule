@@ -4,8 +4,7 @@ from .heal_cap import HealCapability
 
 class Sproutling(Creature, HealCapability):
     def __init__(self) -> None:
-        Creature.__init__(self, "Sproutling", "Grass")
-        HealCapability.__init__(self)
+        super().__init__("Sproutling", "Grass")
 
     def attack(self) -> str:
         return f"{self.name} uses Vine Whip!"
@@ -16,8 +15,7 @@ class Sproutling(Creature, HealCapability):
 
 class Bloomelle(Creature, HealCapability):
     def __init__(self) -> None:
-        Creature.__init__(self, "Bloomelle", "Grass/Fairy")
-        HealCapability.__init__(self)
+        super().__init__("Bloomelle", "Grass/Fairy")
 
     def attack(self) -> str:
         return f"{self.name} uses Petal Dance!"
