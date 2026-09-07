@@ -1,31 +1,52 @@
+from itertools import combinations
+from typing import List, Tuple
 from ex0 import CreatureFactory, FlameFactory, AquaFactory
 from ex1 import HealingCreatureFactory, TransformCreatureFactory
-from ex2 import NormalStrategy, AggressiveStrategy, DefensiveStrategy, StrategyError
+from ex2 import (BattleStrategy,
+                 NormalStrategy,
+                 AggressiveStrategy,
+                 DefensiveStrategy,
+                 StrategyError)
 
 
-def battle_match(match_pair: tuple[Creature, CreatureFactory]) -> None:
+Opponent = Tuple[CreatureFactory, BattleStrategy]
+
+
+def battle(opponents: List[Opponent]) -> None:
     print("*** Tournament ***")
+    print(f"{len(opponents)} opponents involved")
+    print()
+    fighters = [
+        (factory.create_base(), strategy) for factory, strategy in opponents
+    ]
+    for (creature_a, strategy_a), (creature_b, strategy_b) in combinations(fighters, 2):
+        print("* Battle *")
+        print(creature_a.describe())
+        print(" vs. ")
+        print(creature_b.describe())
+        print(" Now Fight!")
+        try:
+            print(strategy_a.act(creature_a))
+            print(strategy_b.act(creature_b))
+        except StrategyError as e:
+            print(f"Battle Error, aborting tournament: {e}")
+            return
+        print()
 
 
 if __name__ == "__main__":
-    print("Tournament 0 (Basic)")
-    flameling = FlameFactory().create_base()
-    sproutling = HealingCreatureFactory().create_base()
-    print(f"[({flameling.name}+Normal), ({sproutling.name}+Defensive)]")
-    print("*** Tournament ***")
-    print("2 opponents involved")
+    match_a = ((FlameFactory(), NormalStrategy()),
+               (HealingCreatureFactory(), DefensiveStrategy()))
+    print("Tournament 0 (basic)")
+    battle(match_a)
     print()
-    print("* Battle *")
-    print(flameling.describe())
-    print("vs.")
-    print(sproutling.describe())
-    print("NOW FIGHT!")
-    normal = NormalStrategy()
-    defensive = DefensiveStrategy()
-    aggresive = AggressiveStrategy()
-    try:
-        if normal.is_valid(flameling) and defensive.is_valid(sproutling):
-            print(normal.act(flameling))
-            print(defensive.act(sproutling))
-    except StrategyError as e:
-        print(e)
+    match_b = ((FlameFactory(), AggressiveStrategy()),
+               (HealingCreatureFactory(), DefensiveStrategy()))
+    print("Tournament 1 (error)")
+    battle(match_b)
+    print()
+    match_c = ((AquaFactory(), NormalStrategy()),
+               (HealingCreatureFactory(), DefensiveStrategy()),
+               (TransformCreatureFactory(), AggressiveStrategy()))
+    battle(match_c)
+    print()
