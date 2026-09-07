@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
+from ex0.creature_abc import Creature
 
 
 class BattleStrategy(ABC):
     @abstractmethod
-    def act(self) -> None:
+    def act(self, creature: Creature) -> str:
         ...
 
     @abstractmethod
-    def is_valid(self) -> bool:
+    def is_valid(self, creature: Creature) -> bool:
         ...

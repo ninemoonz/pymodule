@@ -10,7 +10,7 @@ class Shiftling(Creature, TransformCapability):
     def attack(self) -> str:
         if self._form == 0:
             return f"{self.name} attack normally."
-        if self._form == 1:
+        else:
             return f"{self.name} performs a boosted strike!"
 
     def transform(self) -> str:
@@ -30,7 +30,7 @@ class Morphagon(Creature, TransformCapability):
     def attack(self) -> str:
         if self._form == 0:
             return f"{self.name} attacks normally."
-        if self._form == 1:
+        else:
             return f"{self.name} unleashes a devastating morph strike!"
 
     def transform(self) -> str:

@@ -19,7 +19,8 @@ def battle(opponents: List[Opponent]) -> None:
     fighters = [
         (factory.create_base(), strategy) for factory, strategy in opponents
     ]
-    for (creature_a, strategy_a), (creature_b, strategy_b) in combinations(fighters, 2):
+    for ((creature_a, strategy_a),
+         (creature_b, strategy_b)) in combinations(fighters, 2):
         print("* Battle *")
         print(creature_a.describe())
         print(" vs. ")
@@ -35,18 +36,18 @@ def battle(opponents: List[Opponent]) -> None:
 
 
 if __name__ == "__main__":
-    match_a = ((FlameFactory(), NormalStrategy()),
-               (HealingCreatureFactory(), DefensiveStrategy()))
+    match_a = [(FlameFactory(), NormalStrategy()),
+               (HealingCreatureFactory(), DefensiveStrategy())]
     print("Tournament 0 (basic)")
     battle(match_a)
     print()
-    match_b = ((FlameFactory(), AggressiveStrategy()),
-               (HealingCreatureFactory(), DefensiveStrategy()))
+    match_b = [(FlameFactory(), AggressiveStrategy()),
+               (HealingCreatureFactory(), DefensiveStrategy())]
     print("Tournament 1 (error)")
     battle(match_b)
     print()
-    match_c = ((AquaFactory(), NormalStrategy()),
+    match_c = [(AquaFactory(), NormalStrategy()),
                (HealingCreatureFactory(), DefensiveStrategy()),
-               (TransformCreatureFactory(), AggressiveStrategy()))
+               (TransformCreatureFactory(), AggressiveStrategy())]
     battle(match_c)
     print()

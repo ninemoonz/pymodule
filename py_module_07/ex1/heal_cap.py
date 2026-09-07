@@ -6,5 +6,5 @@ class HealCapability(ABC):
         pass
 
     @abstractmethod
-    def heal(self, target=None) -> str:
+    def heal(self) -> str:
         pass
