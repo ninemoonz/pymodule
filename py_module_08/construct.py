@@ -2,29 +2,22 @@ import os
 import sys
 import site
 
+# Detects whether it is running inside a virtual environment
+# Displays information about the current Python environment
+# Provides instructions for creating and activating a virtual environment if none is detected
+# Show the diff between global and virtual environment package locations.
 
-def in_venv():
+
+def in_venv() -> bool:
     return sys.prefix != sys.base_prefix
 
 
-def matrix_stat(venv: bool):
+def matrix_stat(venv: bool) -> str:
     if not venv:
-        print("MATRIX STATUS: You're still plugged in")
-        print()
-        print(f"Current Python: {sys.prefix}")
-        print("Virtual Environment: None Detected")
-        print()
-        print("WARNING: You're in the global environment!")
-        print("The machines can see everything you install.")
-        print()
-        print("To enter the construct, run:")
-        print("python -m venv matrix_env")
-        print("source matrix_env/bin/activate # On Unix")
-        print("matrix_env\\Script\\activate # On Windows")
-        print()
-        print("Then run this program again")
+        message: str = "You're still plugged in"
     else:
-        
+        message = "welcome to the construct"
+    return f"MATRIX STATUS: {message}"
 
 
 if __name__ == "__main__":
