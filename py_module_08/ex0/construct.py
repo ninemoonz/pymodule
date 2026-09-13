@@ -12,8 +12,8 @@ def in_venv() -> bool:
     return sys.prefix != sys.base_prefix
 
 
-def matrix_stat(venv: bool) -> str:
-    if not venv:
+def matrix_stat(env: bool) -> str:
+    if not env:
         message = "You're still plugged in"
     else:
         message = "Welcome to the construct"
@@ -21,12 +21,18 @@ def matrix_stat(venv: bool) -> str:
     return matrix_msg
 
 
-def current_path() -> str:
-    return sys.prefix
+def current_python(env: bool) -> str:
+    if not env:
+        return (f"Current Python: {sys.executable}\n"
+                f"Virtual Environment: None detected")
+    else:
+        return (f"Current Python: {sys.executable}\n"
+                f"Virtual Environment: {os.path.basename(sys.prefix)}\n"
+                f"Environment Path: {sys.prefix}")
 
 
-def package_site_path(venv: bool) -> str:
-    if not venv:
+def package_site_path(env: bool) -> str:
+    if not env:
         return ("To enter the construct, run:\n"
                 "python -m matrix_env\n"
                 "source matrix_env/bin/activate # On Unix\n"
@@ -38,8 +44,8 @@ def package_site_path(venv: bool) -> str:
                 f"{site.USER_SITE}")
 
 
-def confirm_message(venv: bool) -> str:
-    if not venv:
+def confirm_message(env: bool) -> str:
+    if not env:
         return ("WARNING: You're in the global environment!\n"
                 "The machines can see everything you install")
     else:
@@ -48,13 +54,17 @@ def confirm_message(venv: bool) -> str:
                 "the global system.")
 
 
+def message_struct(env: bool) -> None:
+    print()
+    print(matrix_stat(env))
+    print()
+    print(current_python(env))
+    print()
+    print(confirm_message(env))
+    print()
+    print(package_site_path(env))
+
+
 if __name__ == "__main__":
-    print()
-    print(matrix_stat(in_venv()))
-    print()
-    print(f"Current Python: {current_path()}")
-    print()
-    print(f"{confirm_message(in_venv())}")
-    print()
-    print(package_site_path(in_venv()))
-    print(f"Current working directory: {os.getcwd()}")
+    base_check = in_venv()
+    message_struct(base_check)
