@@ -57,3 +57,4 @@ if __name__ == "__main__":
     print(f"{confirm_message(in_venv())}")
     print()
     print(package_site_path(in_venv()))
+    print(f"Current working directory: {os.getcwd()}")
