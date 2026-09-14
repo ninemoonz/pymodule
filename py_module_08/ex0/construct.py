@@ -2,11 +2,6 @@ import os
 import sys
 import site
 
-# Detects whether it is running inside a virtual environment
-# Displays information about the current Python environment
-# Provides instructions for creating and activating a virtual environment if none is detected
-# Show the diff between global and virtual environment package locations.
-
 
 def in_venv() -> bool:
     return sys.prefix != sys.base_prefix
