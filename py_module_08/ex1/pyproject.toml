@@ -2,9 +2,6 @@
 name = "loading"
 version = "0.1.0"
 description = "Matrix data loading and analysis."
-authors = [
-    {name = "kkweon"}
-]
 
 [tool.poetry.dependencies]
 python = "^3.10"

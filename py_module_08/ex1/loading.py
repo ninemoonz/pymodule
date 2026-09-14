@@ -1,3 +1,4 @@
+from __future__ import annotations
 import sys
 
 
@@ -12,13 +13,13 @@ except ImportError:
     np = None
 
 try:
-    import matplotlib as mpl
+    import matplotlib.pyplot as plt
 except ImportError:
-    mpl = None
+    plt = None
 
 
-def dependency_check() -> dict:
-    deps: dict = {}
+def dependency_check() -> dict[str, str | None]:
+    deps: dict[str, str | None] = {}
     for name in ("numpy", "pandas", "matplotlib"):
         try:
             module = __import__(name)
@@ -28,7 +29,7 @@ def dependency_check() -> dict:
     return deps
 
 
-def report_dependencies(dp_result: dict) -> bool:
+def report_dependencies(dp_result: dict[str, str | None]) -> bool:
     intro = {
         "numpy": "Numerical computation ready",
         "pandas": "Data manipulation ready",
@@ -50,25 +51,40 @@ def report_dependencies(dp_result: dict) -> bool:
     return dp_ready
 
 
-def gen_data(n=1000, seed=None):
+def gen_data(n: int = 1000, seed: int | None = None) -> "np.ndarray":
     rnp = np.random.default_rng(seed)
-    data = rnp.normal(loc=0, scale=1, size=n)
+    data = rnp.normal(loc=50, scale=1, size=n)
     return data
 
 
-def data_analysis(data: list[float]) -> None:
-    df = pd.DataFrame(data)
+def data_analysis(data: np.ndarray) -> "pd.DataFrame":
+    df = pd.DataFrame(data, columns=["data_column"])
     print(f"Processing {len(df)} data points...")
+    return df
+
+
+def data_visual(df: "pd.DataFrame",
+                filename: str = "matrix_analysis.png") -> None:
+    print("Generating visulization...\n")
+    plt.hist(df["data_column"], bins=50, color="green")
+    plt.title("Matrix Data Analysis")
+    plt.xlabel("Range")
+    plt.ylabel("Count")
+    plt.savefig(filename)
+    plt.close()
+    print("Analysis complete!")
+    print(f"Results saved to: {filename}")
 
 
 if __name__ == "__main__":
     print("\nLOADING STATUS: Loading programs...\n")
     print("Checking dependencies:")
-    dp_list: dict = dependency_check()
+    dp_list: dict[str, str | None] = dependency_check()
     dp_bool: bool = report_dependencies(dp_list)
     if not dp_bool:
         sys.exit(1)
     print()
-    data: list[float] = gen_data()
     print("Analyzing Matrix data...")
-    data_analysis(data)
+    data: np.ndarray = gen_data()
+    df: pd.DataFrame = data_analysis(data)
+    data_visual(df)
