@@ -1,5 +1,4 @@
 import os
-import sys
 from dotenv import load_dotenv
 
 
@@ -44,10 +43,13 @@ def zion_check() -> None:
         print("Zion Network: Configuration not found")
 
 
-def security_check() -> None:
+def security_check(env_loaded: bool) -> None:
     print("Environment Security check:")
     print("[OK] No hardcoded secrets detected")
-    print("[OK] .env file properly configured")
+    if env_loaded:
+        print("[OK] .env file properly configured")
+    else:
+        print("[WARNING] .env file not found")
     print("[OK] Production overrides available")
 
 
@@ -60,17 +62,20 @@ def config_loading() -> None:
     zion_check()
 
 
-def env_loading() -> None:
+def env_loading() -> bool:
+    loaded: bool = False
     if os.path.exists('.env'):
         load_dotenv()
+        loaded = True
     else:
         print("[ERROR] .env file not found")
+    return loaded
 
 
 if __name__ == "__main__":
     print("\nORACLE STATUS: Reading the Matrix...\n")
-    env_loading()
+    loaded: bool = env_loading()
     config_loading()
     print()
-    security_check()
+    security_check(loaded)
     print("\nThe Oracle sees all configurations.")
