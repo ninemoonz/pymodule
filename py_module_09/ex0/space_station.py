@@ -7,8 +7,8 @@ class SpaceStation(BaseModel):
     station_id: str = Field(min_length=3, max_length=10)
     name: str = Field(min_length=1, max_length=50)
     crew_size: int = Field(ge=1, le=20)
-    power_level: float = Field(multiple_of=0.1, ge=0.0, le=100.0)
-    oxygen_level: float = Field(multiple_of=0.1, ge=0.0, le=100.0)
+    power_level: float = Field(ge=0.0, le=100.0)
+    oxygen_level: float = Field(ge=0.0, le=100.0)
     last_maintenance: datetime
     is_operational: bool = Field(default=True)
     notes: Optional[str] = Field(default=None, max_length=200)
@@ -44,21 +44,22 @@ def main() -> None:
         print(f"Notes: {valid_station.notes}\n")
     print("====================================================")
     try:
-        invalid_station = SpaceStation(
+        SpaceStation(
             station_id="SS0042",
             name="SpaceStation-0042",
-            crew_size=20,
-            power_level=1000,
-            oxygen_level=93.33,
-            last_maintenance="65s1d65fw",
+            crew_size=42,
+            power_level=-100,
+            oxygen_level=93.3,
+            last_maintenance=datetime.today(),
             is_operational=True,
             notes="We want some fruits"
         )
         print("No validation error detected")
-    except Exception as e:
-        print(f"Expected validation error: {e}")
+    except ValidationError as e:
+        print("Expected validation error(s):")
+        for err in e.errors():
+            print(f" {'.'.join(str(x) for x in err['loc'])}: {err['msg']}")
 
 
 if __name__ == "__main__":
-
     main()
