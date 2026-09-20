@@ -8,7 +8,7 @@ class ContactType(Enum):
     RADIO = "radio"
     VISUAL = "visual"
     PHYSICAL = "physical"
-    TELEPATIC = "telepatic"
+    TELEPATHIC = "telepathic"
 
 
 class AlienContact(BaseModel):
@@ -29,14 +29,14 @@ class AlienContact(BaseModel):
             errors.append("contact_id should start with 'AC'.")
         if self.contact_type == ContactType.PHYSICAL and not self.is_verified:
             errors.append("Can not verify the physical contact.")
-        if ((self.contact_type == ContactType.TELEPATIC) and
+        if ((self.contact_type == ContactType.TELEPATHIC) and
            (self.witness_count < 3)):
             errors.append("Not enough witness to verify Telepathic contact. "
                           "Requires minimum 3 witnesses.")
         if self.signal_strength >= 7.0 and not self.message_received:
             errors.append("Signal strength is strong. Check message.")
         if errors:
-            raise ValueError("; ".join(errors))
+            raise ValueError("\n ".join(errors))
         print(errors)
         return self
 
@@ -46,11 +46,11 @@ def main() -> None:
                     contact_id="AC-123",
                     timestamp=datetime.today(),
                     location="Area 42, Amsterdam, NL",
-                    contact_type=ContactType.TELEPATIC.value,
+                    contact_type=ContactType.TELEPATHIC.value,
                     signal_strength=4.42,
                     duration_minutes=3,
                     witness_count=4,
-                    message_received="asdfadfasdf",
+                    message_received="Hello World",
                     is_verified=True
                     )
     print("Alien Contact Log validation")
@@ -76,7 +76,7 @@ def main() -> None:
                     contact_id="AC-123",
                     timestamp=datetime.today(),
                     location="Area 42, Amsterdam, NL",
-                    contact_type=ContactType.TELEPATIC.value,
+                    contact_type=ContactType.TELEPATHIC.value,
                     signal_strength=7.42,
                     duration_minutes=3,
                     witness_count=2,
@@ -85,7 +85,7 @@ def main() -> None:
                     )
     except ValidationError as e:
         for err in e.errors():
-            print(f" {err['msg']}")
+            print(f" {err['msg']}\n")
 
 
 if __name__ == "__main__":
