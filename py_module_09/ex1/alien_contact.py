@@ -19,19 +19,25 @@ class AlienContact(BaseModel):
     signal_strength: float = Field(..., ge=0.0, le=10.0)
     duration_minutes: int = Field(..., ge=1, le=1440)
     witness_count: int = Field(..., ge=1, le=100)
-    message_received: Optional[str] = Field(max_length=500)
+    message_received: Optional[str] = Field(default=None, max_length=500)
     is_verified: bool = Field(default=False)
 
     @model_validator(mode='after')
     def business_rules(self) -> 'AlienContact':
+        errors = []
         if self.contact_id[:2] != "AC":
-            raise ValueError("contact_id should start with 'AC'.")
+            errors.append("contact_id should start with 'AC'.")
         if self.contact_type == ContactType.PHYSICAL and not self.is_verified:
-            raise ValueError("Can not verify the physical contact.")
-        if self.contact_type == ContactType.TELEPATIC and not self.witness_count >= 3:
-            raise ValueError("Not enough witness to verify Telepathic contact.")
-        if self.signal_strength >= 7.0 and not self.message_recieved:
-            raise ValueError("Signal strneght is strong. Check message.")
+            errors.append("Can not verify the physical contact.")
+        if ((self.contact_type == ContactType.TELEPATIC) and
+           (self.witness_count < 3)):
+            errors.append("Not enough witness to verify Telepathic contact. "
+                          "Requires minimum 3 witnesses.")
+        if self.signal_strength >= 7.0 and not self.message_received:
+            errors.append("Signal strength is strong. Check message.")
+        if errors:
+            raise ValueError("; ".join(errors))
+        print(errors)
         return self
 
 
@@ -40,10 +46,10 @@ def main() -> None:
                     contact_id="AC-123",
                     timestamp=datetime.today(),
                     location="Area 42, Amsterdam, NL",
-                    contact_type=ContactType.PHYSICAL.value,
+                    contact_type=ContactType.TELEPATIC.value,
                     signal_strength=4.42,
                     duration_minutes=3,
-                    witness_count=7,
+                    witness_count=4,
                     message_received="asdfadfasdf",
                     is_verified=True
                     )
@@ -51,7 +57,7 @@ def main() -> None:
     print("============================")
     print("Valid Contact Report:")
     print(f"ID: {contact_a.contact_id}")
-    print(f"Type: {contact_a.contact_type}")
+    print(f"Type: {contact_a.contact_type.value}")
     print(f"Location: {contact_a.location}")
     print(f"Signal: {contact_a.signal_strength}/10")
     print(f"Duration: {contact_a.duration_minutes} minutes")
@@ -70,16 +76,16 @@ def main() -> None:
                     contact_id="AC-123",
                     timestamp=datetime.today(),
                     location="Area 42, Amsterdam, NL",
-                    contact_type=ContactType.PHYSICAL.value,
+                    contact_type=ContactType.TELEPATIC.value,
                     signal_strength=7.42,
                     duration_minutes=3,
-                    witness_count=7,
-                    message_received="asdfadfasdf",
-                    is_verified=True
+                    witness_count=2,
+                    message_received=None,
+                    is_verified=False
                     )
     except ValidationError as e:
         for err in e.errors():
-            print(f" {'.'.join(str(x) for x in err['loc'])}: {err['msg']}")
+            print(f" {err['msg']}")
 
 
 if __name__ == "__main__":
