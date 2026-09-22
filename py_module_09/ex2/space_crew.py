@@ -49,7 +49,7 @@ class SpaceMission(BaseModel):
         for member in self.crew:
             if member.years_experience >= 5:
                 experience += 1
-        if not experience != mem_num * 0.5:
+        if experience < mem_num * 0.5:
             raise ValueError(f"This mission need at least {mem_num * 0.5} "
                              "crews with 5+ years of experiences.")
         for member in self.crew:
@@ -62,23 +62,24 @@ def main() -> None:
     # Generate mission data
     config = DataConfig()
     generator = CrewMissionGenerator(config)
-    raw_missions = generator.generate_mission_data(count=1)
+    raw_missions = generator.generate_mission_data(count=3)
     raw_mission = raw_missions[0]
 
     print("Space Mission Crew Validation")
     print("=============================")
-    print("Valid mission created:")
     for raw in raw_missions:
         try:
+            print("Valid mission created:")
             mission = SpaceMission(**raw)
             print(f"Mission: {mission.mission_name}")
             print(f"ID: {mission.mission_id}")
-            print(f"Destination: {mission.duration_days} days")
+            print(f"Destination: {mission.destination}")
             print(f"Budget: {mission.budget_millions}M")
             print(f"Crew size: {len(mission.crew)}")
             for crew in mission.crew:
                 print(f"- {crew.name} ({crew.rank.value}) "
                       f"- {crew.specialization}")
+            print()
         except ValidationError as e:
             for err in e.errors():
                 print(f" {err['msg']}")
