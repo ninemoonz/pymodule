@@ -44,12 +44,12 @@ class SpaceMission(BaseModel):
         if not high_officer:
             raise ValueError("Mission must have at least one "
                              "Commander or Captain.")
-        experience = 0
+        exp_stack = 0
         mem_num = len(self.crew)
         for member in self.crew:
             if member.years_experience >= 5:
-                experience += 1
-        if experience < mem_num * 0.5:
+                exp_stack += 1
+        if exp_stack < mem_num * 0.5:
             raise ValueError(f"This mission need at least {mem_num * 0.5} "
                              "crews with 5+ years of experiences.")
         for member in self.crew:
@@ -62,12 +62,11 @@ def main() -> None:
     # Generate mission data
     config = DataConfig()
     generator = CrewMissionGenerator(config)
-    raw_missions = generator.generate_mission_data(count=3)
-    raw_mission = raw_missions[0]
+    raw_mission = generator.generate_mission_data(count=1)
 
     print("Space Mission Crew Validation")
     print("=============================")
-    for raw in raw_missions:
+    for raw in raw_mission:
         try:
             print("Valid mission created:")
             mission = SpaceMission(**raw)
@@ -79,7 +78,6 @@ def main() -> None:
             for crew in mission.crew:
                 print(f"- {crew.name} ({crew.rank.value}) "
                       f"- {crew.specialization}")
-            print()
         except ValidationError as e:
             for err in e.errors():
                 print(f" {err['msg']}")
@@ -88,8 +86,9 @@ def main() -> None:
     print("Expected validation error:")
     try:
         bad_mission = raw_mission.copy()
-        bad_mission["mission_id"] = "2314-TITAN"
-        SpaceMission(**bad_mission)
+        for bad in bad_mission:
+            bad["mission_id"] = "XD-TITAN"
+            SpaceMission(**bad)
         print("No Validation error detected")
     except ValidationError as e:
         for err in e.errors():
